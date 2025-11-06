@@ -1,44 +1,33 @@
-# Pterodactyl Port Mapper for OPNsense
+# 🚀 Pterodactyl Port Mapper for OPNsense
 
-Automatically synchronize Pterodactyl server ports with OPNsense firewall NAT rules.
+[![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)](https://github.com/Smallinger/pterodactyl-portmapper/pkgs/container/pterodactyl-portmapper)
+[![Python](https://img.shields.io/badge/python-3.11-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge)](LICENSE)
+
+Automatically synchronize port forwarding between **Pterodactyl Panel** and **OPNsense Firewall**. No manual NAT rule management needed!
+
+---
 
 ## 📋 Features
 
-- ✅ Automatic port synchronization every 60 seconds (configurable)
-- ✅ Bulk updates: All ports updated at once
-- ✅ Smart detection: Updates only when changes occur
-- ✅ Port protection: Protected ports (SSH, HTTP, etc.) never forwarded
-- ✅ Automatic cleanup: Orphaned ports removed automatically
-- ✅ Docker support with Docker Compose
+- ✅ **Automatic Sync** - Checks every 60 seconds for changes
+- ✅ **Bulk Updates** - All ports updated at once (no port loss)
+- ✅ **Smart Detection** - Only updates when changes occur
+- ✅ **Port Protection** - Critical ports (SSH, HTTP, etc.) never forwarded
+- ✅ **Auto Cleanup** - Removes orphaned ports automatically
+- ✅ **Docker Ready** - Pre-built images available on GitHub Container Registry
+- ✅ **Multi-Platform** - Supports AMD64 and ARM64 (Raspberry Pi!)
 
-## 🔧 Requirements
+---
 
-- Pterodactyl Panel with Application API Key
-- OPNsense Firewall with API access
-- Python 3.7+ or Docker
+## 🎯 Quick Start (Docker)
 
-## 📦 Installation
-
-### Option 1: Pre-built Docker Image from GitHub (Easiest! 🚀)
-
-The Docker image is automatically built and published to GitHub Container Registry with every release.
-
-1. **Pull the image:**
+**1. Create `.env` file:**
 ```bash
-# Latest version
-docker pull ghcr.io/smallinger/pterodactyl-portmapper:latest
-
-# Or specific version
-docker pull ghcr.io/smallinger/pterodactyl-portmapper:v1.0.0
-```
-
-2. **Create `.env` file:**
-```bash
-# Create .env file with your credentials
 cat > .env << 'EOF'
 PTERODACTYL_PANEL_URL=https://your-panel.com
-PTERODACTYL_API_KEY=your_api_key
-OPNSENSE_URL=https://your-opnsense-ip
+PTERODACTYL_API_KEY=ptla_your_api_key
+OPNSENSE_URL=https://192.168.1.1
 OPNSENSE_API_KEY=your_opnsense_key
 OPNSENSE_API_SECRET=your_opnsense_secret
 ALIAS_NAME=pterodactyl_ports
@@ -46,8 +35,38 @@ EXCLUDED_PORTS=22,80,443,3306,5432,6379,8006,9090
 EOF
 ```
 
-3. **Run the container:**
+**2. Download and start:**
 ```bash
+curl -O https://raw.githubusercontent.com/Smallinger/pterodactyl-portmapper/main/docker-compose.ghcr.yml
+docker-compose -f docker-compose.ghcr.yml up -d
+```
+
+**3. View logs:**
+```bash
+docker-compose -f docker-compose.ghcr.yml logs -f
+```
+
+✅ **Done!** Ports will sync automatically every 60 seconds.
+
+---
+
+## 📦 Installation Options
+
+### Option 1: Pre-built Docker Image (Recommended 🚀)
+
+Uses the pre-built image from GitHub Container Registry.
+
+```bash
+# Pull latest image
+docker pull ghcr.io/smallinger/pterodactyl-portmapper:latest
+
+# Create .env file (see Quick Start above)
+
+# Run with Docker Compose
+curl -O https://raw.githubusercontent.com/Smallinger/pterodactyl-portmapper/main/docker-compose.ghcr.yml
+docker-compose -f docker-compose.ghcr.yml up -d
+
+# Or run with Docker directly
 docker run -d \
   --name pterodactyl-portmapper \
   --env-file .env \
@@ -55,187 +74,152 @@ docker run -d \
   ghcr.io/smallinger/pterodactyl-portmapper:latest
 ```
 
-4. **View logs:**
-```bash
-docker logs -f pterodactyl-portmapper
-```
+### Option 2: Build from Source
 
-### Option 2: Docker with .env file (Build from source)
+Clone and build the image yourself.
 
-1. **Clone repository:**
 ```bash
-git clone <repository-url>
-cd PetrodactylPortMapper
-```
-
-2. **Create configuration:**
-```bash
+git clone https://github.com/Smallinger/pterodactyl-portmapper.git
+cd pterodactyl-portmapper
 cp .env.example .env
-nano .env
-```
-
-3. **Start container:**
-```bash
+nano .env  # Edit with your credentials
 docker-compose up -d
 ```
 
-4. **View logs:**
+### Option 3: Manual Python Installation
+
+For development or custom deployments.
+
 ```bash
-docker-compose logs -f
-```
+# Clone repository
+git clone https://github.com/Smallinger/pterodactyl-portmapper.git
+cd pterodactyl-portmapper
 
-### Option 3: Docker with direct configuration
-
-If you don't want to use a `.env` file:
-
-1. **Clone repository:**
-```bash
-git clone <repository-url>
-cd PetrodactylPortMapper
-```
-
-2. **Edit docker-compose.yml:**
-```bash
-nano docker-compose.yml
-```
-Uncomment and fill in your API keys and configuration in the `environment` section.
-
-3. **Start container:**
-```bash
-docker-compose up -d
-```
-
-### Option 4: Manual Python installation
-
-1. **Clone repository:**
-```bash
-git clone <repository-url>
-cd PetrodactylPortMapper
-```
-
-2. **Create virtual environment:**
-```bash
+# Create virtual environment
 python -m venv .venv
 source .venv/bin/activate  # Linux/Mac
-.venv\Scripts\activate     # Windows
-```
+# .venv\Scripts\activate   # Windows
 
-3. **Install dependencies:**
-```bash
+# Install dependencies
 pip install -r requirements.txt
-```
 
-4. **Create configuration:**
-```bash
+# Configure
 cp .env.example .env
 nano .env
-```
 
-5. **Start script:**
-```bash
+# Run
 python main.py
 ```
 
-## ⚙️ Configuration (.env)
+---
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `PTERODACTYL_PANEL_URL` | ✅ | - | Your Pterodactyl Panel URL |
+| `PTERODACTYL_API_KEY` | ✅ | - | Application API key (starts with `ptla_`) |
+| `OPNSENSE_URL` | ✅ | - | OPNsense firewall URL |
+| `OPNSENSE_API_KEY` | ✅ | - | OPNsense API key |
+| `OPNSENSE_API_SECRET` | ✅ | - | OPNsense API secret |
+| `ALIAS_NAME` | ✅ | `pterodactyl_ports` | Name of the OPNsense alias |
+| `EXCLUDED_PORTS` | ❌ | `22,80,443,...` | Comma-separated list of protected ports |
+| `SYNC_INTERVAL` | ❌ | `60` | Sync interval in seconds |
+| `OPNSENSE_VERIFY_SSL` | ❌ | `false` | Verify SSL certificates |
+
+### Example `.env` File
 
 ```bash
-# Pterodactyl API
+# Pterodactyl Configuration
 PTERODACTYL_PANEL_URL=https://panel.example.com
-PTERODACTYL_API_KEY=ptla_your_application_api_key
+PTERODACTYL_API_KEY=ptla_your_application_api_key_here
 
-# OPNsense API
+# OPNsense Configuration
 OPNSENSE_URL=https://192.168.1.1
-OPNSENSE_API_KEY=your_api_key
-OPNSENSE_API_SECRET=your_api_secret
+OPNSENSE_API_KEY=rEDXpKba+fLVfNX...
+OPNSENSE_API_SECRET=I4xyP5uLJ2lgDId...
 OPNSENSE_VERIFY_SSL=false
 
-# Port Mapping Configuration
+# Alias Configuration
 ALIAS_NAME=pterodactyl_ports
 SYNC_INTERVAL=60
 
-# Protected ports (comma-separated) - will NEVER be forwarded
+# Protected Ports (SSH, HTTP, HTTPS, databases, etc.)
 EXCLUDED_PORTS=22,80,443,3306,5432,6379,8006,9090
 ```
 
+---
+
 ## 🔐 OPNsense Setup
 
-### Step 1: Create API Keys
+Before running the script, you need to configure OPNsense:
 
-1. **Log into OPNsense**
-2. Navigate to: **System → Access → Users**
-3. Select your admin user or create a new user for the API
-4. Scroll to **API keys** and click **"+"**
-5. **Note down:**
-   - API Key (e.g., `rEDXpKba+fLVfNX...`)
-   - API Secret (e.g., `I4xyP5uLJ2lgDId...`)
-6. Add these to your `.env` file
+### 1️⃣ Create API Keys
 
-### Step 2: Create Alias
+1. Log into OPNsense
+2. Go to **System → Access → Users**
+3. Select your user or create a dedicated API user
+4. Scroll to **API keys** → Click **"+"**
+5. Copy the **API Key** and **API Secret**
+6. Add them to your `.env` file
 
-1. Navigate to: **Firewall → Aliases**
-2. Click **"+"** (Add)
-3. Configure the alias:
-   - **Enabled:** ✓ (enabled)
-   - **Name:** `pterodactyl_ports` (must match ALIAS_NAME in .env)
-   - **Type:** Port(s)
-   - **Content:** (leave empty - will be filled automatically)
-   - **Description:** `Dynamic port forwards for Pterodactyl servers`
-4. Click **Save**
-5. Click **Apply** in the top right
+### 2️⃣ Create Alias
 
-### Step 3: Create NAT Port Forward Rule
+1. Go to **Firewall → Aliases**
+2. Click **"+"** to add a new alias
+3. Configure:
+   - **Name:** `pterodactyl_ports` (must match `.env`)
+   - **Type:** `Port(s)`
+   - **Content:** (leave empty)
+   - **Description:** `Auto-managed Pterodactyl ports`
+4. Click **Save** → **Apply**
 
-1. Navigate to: **Firewall → NAT → Port Forward**
-2. Click **"+"** (Add)
-3. Configure the rule:
+### 3️⃣ Create NAT Port Forward Rule
 
-   **Translation:**
-   - **Interface:** WAN (your external interface)
-   - **Protocol:** TCP
-   - **Source:** any
-   - **Source Port:** (empty)
-   
-   **Destination:**
-   - **Destination:** WAN address
-   - **Destination Port:** `pterodactyl_ports` (select the alias!)
-   
-   **Redirect Target:**
-   - **Redirect target IP:** `192.168.x.x` (IP of your Pterodactyl host)
-   - **Redirect target port:** `pterodactyl_ports` (select the alias!)
-   
-   **Misc:**
-   - **Description:** `Pterodactyl Auto Port Forwarding`
-   - **NAT reflection:** Use system default
-   - **Filter rule association:** Pass
+1. Go to **Firewall → NAT → Port Forward**
+2. Click **"+"** to add a rule
+3. Configure:
 
-4. Click **Save**
-5. Click **Apply changes** in the top right
+| Field | Value |
+|-------|-------|
+| **Interface** | WAN |
+| **Protocol** | TCP |
+| **Destination** | WAN address |
+| **Destination Port** | `pterodactyl_ports` (alias) |
+| **Redirect Target IP** | Your Pterodactyl host IP (e.g., `192.168.1.100`) |
+| **Redirect Target Port** | `pterodactyl_ports` (alias) |
+| **Description** | `Pterodactyl Auto Port Forwarding` |
 
-### Step 4: Verify Firewall Rule (Optional)
+4. Click **Save** → **Apply changes**
 
-The NAT rule automatically creates a firewall rule. Check under:
-- **Firewall → Rules → WAN**
-- You should see a rule: `NAT Pterodactyl Auto Port Forwarding`
+✅ **Done!** The script will now manage the alias content automatically.
+
+---
 
 ## 🚀 Usage
 
-### With Docker
+### Docker Commands
 
 ```bash
 # Start container
-docker-compose up -d
+docker-compose -f docker-compose.ghcr.yml up -d
 
-# View live logs
-docker-compose logs -f
+# View logs (live)
+docker-compose -f docker-compose.ghcr.yml logs -f
 
 # Stop container
-docker-compose down
+docker-compose -f docker-compose.ghcr.yml down
 
-# Restart after changes
-docker-compose restart
+# Restart container
+docker-compose -f docker-compose.ghcr.yml restart
+
+# Check status
+docker ps | grep pterodactyl-portmapper
 ```
 
-### Manual
+### Manual Python
 
 ```bash
 # Run in foreground
@@ -244,10 +228,11 @@ python main.py
 # Run in background (Linux/Mac)
 nohup python main.py > sync.log 2>&1 &
 
-# Run as Windows Service (with NSSM)
-nssm install PterodactylPortMapper "C:\Path\To\Python\python.exe" "C:\Path\To\main.py"
-nssm start PterodactylPortMapper
+# Stop background process
+pkill -f main.py
 ```
+
+---
 
 ## 📊 Output Example
 
@@ -262,106 +247,147 @@ nssm start PterodactylPortMapper
 ======================================================================
 
 📡 Fetching Pterodactyl servers...
-✓ 2 servers, 2 allocations found
-📋 Pterodactyl Ports: [20000, 20001]
+✓ 2 servers, 3 allocations found
+📋 Pterodactyl Ports: [25565, 25566, 30000]
 
 🔍 Fetching OPNsense alias...
 ✓ 2 ports found in alias
-📋 OPNsense Ports: [20000, 20001]
+📋 OPNsense Ports: [25565, 25566]
 
 🔍 Comparing ports...
-✅ No differences - all ports are in sync!
+➕ Adding: [30000]
+
+🔄 Updating OPNsense alias...
+✓ Alias updated successfully
+✓ Firewall reconfigured
 
 ======================================================================
-✅ Sync completed: 2025-11-06 15:30:00
-📊 Status: 2 active ports
+✅ Sync completed: 2025-11-06 15:30:01
+📊 Status: 3 active ports
 ======================================================================
 
 💤 Waiting 60 seconds until next sync...
 ```
 
+---
+
 ## 🔒 Security
 
 ### Protected Ports
 
-The script automatically prevents forwarding of critical system ports:
-- `22` - SSH
-- `80` - HTTP
-- `443` - HTTPS
-- `3306` - MySQL
-- `5432` - PostgreSQL
-- `6379` - Redis
-- `8006` - Proxmox Web UI
-- `9090` - Portainer/Management Tools
+These ports are **never forwarded** to prevent security issues:
 
-**Customization:** Edit `EXCLUDED_PORTS` in the `.env` file.
+| Port | Service |
+|------|---------|
+| 22 | SSH |
+| 80 | HTTP |
+| 443 | HTTPS |
+| 3306 | MySQL |
+| 5432 | PostgreSQL |
+| 6379 | Redis |
+| 8006 | Proxmox Web UI |
+| 9090 | Management Tools |
+
+**Customize:** Edit `EXCLUDED_PORTS` in `.env`
 
 ### Best Practices
 
-1. ✅ Use a **dedicated API user** in OPNsense
-2. ✅ Set **OPNSENSE_VERIFY_SSL=true** in production (after SSL certificate setup)
-3. ✅ Store the `.env` file **securely** (contains API keys)
-4. ✅ Regularly check logs for anomalies
-5. ✅ Test in a **test environment** first
+- ✅ Use a dedicated API user in OPNsense with minimal permissions
+- ✅ Set `OPNSENSE_VERIFY_SSL=true` in production (requires valid SSL cert)
+- ✅ Never commit `.env` file to version control
+- ✅ Regularly review firewall logs
+- ✅ Test in a safe environment first
+- ✅ Keep the Docker image updated
+
+---
 
 ## 🐛 Troubleshooting
 
-### Problem: "Alias not found"
-**Solution:** Make sure the alias name in OPNsense exactly matches `ALIAS_NAME` in `.env`.
+| Problem | Solution |
+|---------|----------|
+| **"Alias not found"** | Verify alias name matches `ALIAS_NAME` in `.env` |
+| **"401 Unauthorized"** | Check API credentials in `.env` and OPNsense |
+| **"Ports not forwarding"** | Verify NAT rule uses the alias for both destination and target |
+| **"SSL Certificate Error"** | Set `OPNSENSE_VERIFY_SSL=false` or install valid cert |
+| **Container won't start** | Run `docker-compose logs` to see error details |
+| **Port 80 being forwarded** | Check `EXCLUDED_PORTS` in `.env` includes port 80 |
 
-### Problem: "401 Unauthorized"
-**Solution:** Check your API keys in the `.env` file and in OPNsense.
+### Debug Mode
 
-### Problem: "Ports not being forwarded"
-**Solution:** 
-1. Check the NAT Port Forward rule
-2. Make sure the alias is used as **Destination Port** AND **Redirect Target Port**
-3. Check firewall logs: **Firewall → Log Files → Live View**
-
-### Problem: "SSL Certificate Verify Failed"
-**Solution:** Set `OPNSENSE_VERIFY_SSL=false` in `.env` or install a valid SSL certificate in OPNsense.
-
-### Problem: Docker container won't start
-**Solution:**
 ```bash
-# Check logs
-docker-compose logs
+# View detailed logs
+docker-compose -f docker-compose.ghcr.yml logs -f --tail=100
 
-# Check container status
-docker-compose ps
+# Check container is running
+docker ps | grep pterodactyl
 
-# Verify .env file
-cat .env
+# Restart container
+docker-compose -f docker-compose.ghcr.yml restart
 ```
+
+---
 
 ## 📁 Project Structure
 
 ```
-PetrodactylPortMapper/
-├── main.py      # Main script
-├── requirements.txt      # Python dependencies
-├── .env                  # Configuration (don't commit!)
-├── .env.example          # Example configuration
-├── Dockerfile            # Docker image
-├── docker-compose.yml    # Docker Compose config
-├── .dockerignore         # Docker ignore rules
-└── README.md             # This file
+pterodactyl-portmapper/
+├── main.py                     # Main synchronization script
+├── requirements.txt            # Python dependencies
+├── Dockerfile                  # Docker image definition
+├── docker-compose.yml          # Docker Compose for building
+├── docker-compose.ghcr.yml     # Docker Compose for GHCR image
+├── .env.example                # Example configuration
+├── .github/
+│   └── workflows/
+│       └── docker-publish.yml  # Auto-build on releases
+├── .dockerignore               # Docker build exclusions
+├── .gitignore                  # Git exclusions
+└── README.md                   # This file
 ```
 
-## 🔄 Workflow
+---
 
-1. **Create Pterodactyl server** → Port automatically forwarded in OPNsense
-2. **Delete Pterodactyl server** → Port automatically removed from OPNsense
-3. **Manual port in alias** → Removed (if not in Pterodactyl)
-4. **Protected port** → Ignored and never forwarded
+## 🔄 How It Works
+
+1. **Fetch** - Script queries Pterodactyl API for all server allocations
+2. **Filter** - Removes protected ports (SSH, HTTP, etc.)
+3. **Compare** - Compares Pterodactyl ports with OPNsense alias
+4. **Update** - Bulk updates alias if changes detected
+5. **Apply** - Triggers OPNsense firewall reconfiguration
+6. **Repeat** - Waits 60 seconds and starts again
+
+**Example Flow:**
+- Create Pterodactyl server → Port auto-added to firewall
+- Delete Pterodactyl server → Port auto-removed from firewall
+- Server uses port 22 → Ignored (protected port)
+
+---
 
 ## 📝 License
 
-MIT License
+MIT License - See [LICENSE](LICENSE) file for details
 
-## 🤝 Support
+---
 
-If you have problems:
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+---
+
+## 💖 Support
+
+- **Issues:** [GitHub Issues](https://github.com/Smallinger/pterodactyl-portmapper/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/Smallinger/pterodactyl-portmapper/discussions)
+- **Star this repo** if you find it useful! ⭐
+
+---
+
+Made with ❤️ for the Pterodactyl and OPNsense community
 1. Check the logs
 2. Review OPNsense API documentation
 3. Create an issue in the repository

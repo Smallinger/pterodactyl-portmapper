@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  portmapper:
+    image: ghcr.io/smallinger/pterodactyl-portmapper:latest
+    container_name: pterodactyl-portmapper
+    restart: unless-stopped
+    
+    # Option 1: Use .env file (recommended)
+    env_file:
+      - .env
+    
+    # Option 2: Or define environment variables directly (comment out env_file above)
+    # environment:
+    #   PTERODACTYL_PANEL_URL: "https://your-panel.com"
+    #   PTERODACTYL_API_KEY: "your_api_key"
+    #   OPNSENSE_URL: "https://your-opnsense-ip"
+    #   OPNSENSE_API_KEY: "your_opnsense_key"
+    #   OPNSENSE_API_SECRET: "your_opnsense_secret"
+    #   ALIAS_NAME: "pterodactyl_ports"
+    #   EXCLUDED_PORTS: "22,80,443,3306,5432,6379,8006,9090"
+    #   PYTHONUNBUFFERED: "1"
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
