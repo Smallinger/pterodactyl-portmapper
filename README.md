@@ -19,7 +19,48 @@ Automatically synchronize Pterodactyl server ports with OPNsense firewall NAT ru
 
 ## 📦 Installation
 
-### Option 1: Docker with .env file (Recommended)
+### Option 1: Pre-built Docker Image from GitHub (Easiest! 🚀)
+
+The Docker image is automatically built and published to GitHub Container Registry with every release.
+
+1. **Pull the image:**
+```bash
+# Latest version
+docker pull ghcr.io/smallinger/pterodactyl-portmapper:latest
+
+# Or specific version
+docker pull ghcr.io/smallinger/pterodactyl-portmapper:v1.0.0
+```
+
+2. **Create `.env` file:**
+```bash
+# Create .env file with your credentials
+cat > .env << 'EOF'
+PTERODACTYL_PANEL_URL=https://your-panel.com
+PTERODACTYL_API_KEY=your_api_key
+OPNSENSE_URL=https://your-opnsense-ip
+OPNSENSE_API_KEY=your_opnsense_key
+OPNSENSE_API_SECRET=your_opnsense_secret
+ALIAS_NAME=pterodactyl_ports
+EXCLUDED_PORTS=22,80,443,3306,5432,6379,8006,9090
+EOF
+```
+
+3. **Run the container:**
+```bash
+docker run -d \
+  --name pterodactyl-portmapper \
+  --env-file .env \
+  --restart unless-stopped \
+  ghcr.io/smallinger/pterodactyl-portmapper:latest
+```
+
+4. **View logs:**
+```bash
+docker logs -f pterodactyl-portmapper
+```
+
+### Option 2: Docker with .env file (Build from source)
 
 1. **Clone repository:**
 ```bash
@@ -43,7 +84,7 @@ docker-compose up -d
 docker-compose logs -f
 ```
 
-### Option 2: Docker with direct configuration
+### Option 3: Docker with direct configuration
 
 If you don't want to use a `.env` file:
 
@@ -64,7 +105,7 @@ Uncomment and fill in your API keys and configuration in the `environment` secti
 docker-compose up -d
 ```
 
-### Option 3: Manual Python installation
+### Option 4: Manual Python installation
 
 1. **Clone repository:**
 ```bash
