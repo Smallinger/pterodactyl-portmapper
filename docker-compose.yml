@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  portmapper:
+    build: .
+    container_name: pterodactyl-portmapper
+    restart: unless-stopped
+    # Option 1: Use .env file (default)
+    env_file:
+      - .env
+    # Option 2: OR define values directly here (overrides .env)
+    environment:
+      # Python unbuffered output for live logs
+      - PYTHONUNBUFFERED=1
+      
+      # Timezone
+      - TZ=Europe/Berlin
+      
+      # Pterodactyl API (optional - overrides .env)
+      # - PTERODACTYL_PANEL_URL=https://panel.example.com
+      # - PTERODACTYL_API_KEY=ptla_your_api_key
+      
+      # OPNsense API (optional - overrides .env)
+      # - OPNSENSE_URL=https://192.168.1.1
+      # - OPNSENSE_API_KEY=your_key
+      # - OPNSENSE_API_SECRET=your_secret
+      # - OPNSENSE_VERIFY_SSL=false
+      
+      # Configuration (optional - overrides .env)
+      # - ALIAS_NAME=pterodactyl_ports
+      # - SYNC_INTERVAL=60
+      # - EXCLUDED_PORTS=22,80,443,3306,5432,6379,8006,9090
+    volumes:
+      # Optional: For persistent logs
+      - ./logs:/app/logs
+    networks:
+      - portmapper-net
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
