@@ -385,6 +385,12 @@ Contributions are welcome! Please:
 - **Discussions:** [GitHub Discussions](https://github.com/Smallinger/pterodactyl-portmapper/discussions)
 - **Star this repo** if you find it useful! ⭐
 
+### Support My Work
+
+If you like what I do, consider supporting me:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/smallpox)
+
 ---
 
 Made with ❤️ for the Pterodactyl and OPNsense community
