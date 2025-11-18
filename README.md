@@ -153,7 +153,7 @@ MIT License - See [LICENSE](LICENSE) file
 
 If you like what I do, consider supporting me:
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/smallpox)
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/smallinger)
 
 ---
 
